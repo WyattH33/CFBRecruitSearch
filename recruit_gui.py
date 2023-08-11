@@ -37,22 +37,22 @@ def create_col(player_list):
 
 def createWindow(key, window): #sorts players based off of selected criteria and refreshes the window
         global sorted_list
+        global players
         var = str(values[key])
         if len(sorted_list) < 1:
                 print('less than 1')
-                print(player_list)
-                players = player_list
+                players = player_list 
                 for player in player_list:
                         if var in player:
                                 sorted_list.append(player) #(41-47) adds players in player_list to sorted_list if they match the sort criteria (position, class, etc.)
                         
         elif var == 'ALL':
                 print('all sort')
-                print(player_list)
-                sorted_list = player_list[0:]
+                print(players)
+                sorted_list = players
         else:
                 print('ADDED LIST')
-                players = sorted_list
+                players = sorted_list.copy()
                 count = len(sorted_list)
                 for player in sorted_list[0:count]:
                         if var not in player and var != 'Ascending' and var != 'Descending':
@@ -126,4 +126,5 @@ while not win_closed:
 
               
 
-#STOP. General functionality on all filters. 'ALL' filters work except when the list is empty. Littered with minor bugs
+#STOP. "ALL" filter works except when having to use a list of players not used before. EX. sort by wr, then tx without changing wr, then make wr 'ALL' so the sort criteria is all players from texas. Need to create new set of players and do a new sort calculation]\
+
