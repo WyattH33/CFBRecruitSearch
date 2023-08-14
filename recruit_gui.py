@@ -47,9 +47,22 @@ def createWindow(key, window): #sorts players based off of selected criteria and
                                 sorted_list.append(player) #(41-47) adds players in player_list to sorted_list if they match the sort criteria (position, class, etc.)
                         
         elif var == 'ALL':
+                z = []
                 print('all sort')
-                print(players)
                 sorted_list = players
+                for item in values.items():
+                        if item != var:
+                                z.append(item)
+                x = 0
+                index = len(players)
+                print(z)
+                for player in player_list:
+                        for item in z:
+                                if item[1] in player:
+                                        players.append(player)
+                players = players[index:]
+                print(players)
+
         else:
                 print('ADDED LIST')
                 players = sorted_list.copy()
@@ -127,4 +140,4 @@ while not win_closed:
               
 
 #STOP. "ALL" filter works except when having to use a list of players not used before. EX. sort by wr, then tx without changing wr, then make wr 'ALL' so the sort criteria is all players from texas. Need to create new set of players and do a new sort calculation]\
-
+# ^ displaying all players, but the sroting is off. Made significant progress just need to figure our how to sort by all of the already selected filters when selecting all on one.
