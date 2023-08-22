@@ -51,17 +51,26 @@ def createWindow(key, window): #sorts players based off of selected criteria and
                 print('all sort')
                 sorted_list = players
                 for item in values.items():
-                        if item != var:
+                        if item[1] != var:
                                 z.append(item)
                 x = 0
                 index = len(players)
+                z = z[1:-1]
                 print(z)
                 for player in player_list:
-                        for item in z:
-                                if item[1] in player:
+                        if len(z) > 1:
+
+                                if z[0][1] in player and z[1][1] in player:
                                         players.append(player)
+                        elif len(z) < 1:
+                                players = player_list
+                                print(players)
+                        else:
+                                if z[0][1] in player:
+                                        players.append(player)
+                                
                 players = players[index:]
-                print(players)
+                sorted_list = players
 
         else:
                 print('ADDED LIST')
@@ -98,7 +107,7 @@ def make_school_window(school):
         col = create_col(player_list)
 
         col1 = [
-                [sg.Combo(schools, default_value=school, enable_events=True, key='-SCHOOLS-'),  sg.Combo(positions, default_value='POS', enable_events=True, key='-POSITIONS-'), sg.Combo(years, size=(6), default_value='CLASS', enable_events=True, key='-CLASS-'), sg.Combo(states, size=(6), default_value='STATE', enable_events=True, key='-STATES-'), sg.Combo(ratings, default_value='Descending', enable_events=True, key='-RATINGS-')]
+                [sg.Combo(schools, default_value=school, enable_events=True, key='-SCHOOLS-'),  sg.Combo(positions, default_value='ALL', enable_events=True, key='-POSITIONS-'), sg.Combo(years, size=(6), default_value='ALL', enable_events=True, key='-CLASS-'), sg.Combo(states, size=(6), default_value='ALL', enable_events=True, key='-STATES-'), sg.Combo(ratings, default_value='Descending', enable_events=True, key='-RATINGS-')]
                 ]
 
         layout = [
@@ -139,5 +148,4 @@ while not win_closed:
 
               
 
-#STOP. "ALL" filter works except when having to use a list of players not used before. EX. sort by wr, then tx without changing wr, then make wr 'ALL' so the sort criteria is all players from texas. Need to create new set of players and do a new sort calculation]\
-# ^ displaying all players, but the sroting is off. Made significant progress just need to figure our how to sort by all of the already selected filters when selecting all on one.
+#STOP. "ALL" works (kinda). Tons and tons of bugs need to be fixed as a result. Just find a bug and fix it
