@@ -34,18 +34,18 @@ def create_col(player_list):
                 [sg.Text(f'{player_list[i][0]}', size=(18,1), key='-START_CREATECOL-'), sg.Text(f'{player_list[i][1]}', size=(4,1)), sg.Text(f'{player_list[i][2]}'), sg.Push(), sg.Text(f'{player_list[i][3]}'), sg.Text(f'{player_list[i][4]}')] for i in range(len(player_list))
         ]
         return col
+        
 
-def createWindow(key, window): #sorts players based off of selected criteria and refreshes the window
-        global sorted_list
-        global players
+
+        # SortPlayers Function
+def sortPlayers(key):
         var = str(values[key])
         if len(sorted_list) < 1:
                 print('less than 1')
                 players = player_list 
                 for player in player_list:
                         if var in player:
-                                sorted_list.append(player) #(41-47) adds players in player_list to sorted_list if they match the sort criteria (position, class, etc.)
-                        
+                                sorted_list.append(player) #(41-47) adds players in player_list to sorted_list if they match the sort criteria (position, class, etc.)             
         elif var == 'ALL':
                 z = []
                 print('all sort')
@@ -80,7 +80,11 @@ def createWindow(key, window): #sorts players based off of selected criteria and
                         if var not in player and var != 'Ascending' and var != 'Descending':
                                 sorted_list.remove(player)
 
-        print(var)
+        return sorted_list, players
+
+
+def createWindow(key, window, sorted_list, players):
+        var = str(values[key])
         if key == '-SCHOOLS-':
                 x = make_school_window(var)
         elif key == '-POSITIONS-' or key == '-CLASS-' or key == '-STATES-':
@@ -139,7 +143,8 @@ while not win_closed:
                                 win_closed = True
                                 break
                 if event == '-SCHOOLS-' or event == '-POSITIONS-' or event == '-CLASS-' or event == '-STATES-' or event == '-RATINGS-':
-                        window = createWindow(event, window)
+                        sorted_list, players = sortPlayers(event)
+                        window = createWindow(event, window, sorted_list, players)
         
 
 
@@ -148,4 +153,4 @@ while not win_closed:
 
               
 
-#STOP. "ALL" works (kinda). Tons and tons of bugs need to be fixed as a result. Just find a bug and fix it
+#STOP. Making create window into multiple functions. Need to make sorted_list and players consistent across functions (goes to less than one if every time)
