@@ -39,6 +39,8 @@ def create_col(player_list):
 
         # SortPlayers Function
 def sortPlayers(key):
+        global sorted_list
+        global players
         var = str(values[key])
         if len(sorted_list) < 1:
                 print('less than 1')
@@ -58,7 +60,7 @@ def sortPlayers(key):
                 z = z[1:-1]
                 print(z)
                 for player in player_list:
-                        if len(z) > 1:
+                        if len(z) > 1: # something in here doesnt work with ALL sort
 
                                 if z[0][1] in player and z[1][1] in player:
                                         players.append(player)
@@ -143,7 +145,7 @@ while not win_closed:
                                 win_closed = True
                                 break
                 if event == '-SCHOOLS-' or event == '-POSITIONS-' or event == '-CLASS-' or event == '-STATES-' or event == '-RATINGS-':
-                        sorted_list, players = sortPlayers(event)
+                        sortPlayers(event)
                         window = createWindow(event, window, sorted_list, players)
         
 
@@ -153,4 +155,4 @@ while not win_closed:
 
               
 
-#STOP. Making create window into multiple functions. Need to make sorted_list and players consistent across functions (goes to less than one if every time)
+#STOP. Multiple functions work. Need further testing and bug fixes
