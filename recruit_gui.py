@@ -41,6 +41,8 @@ def create_col(player_list):
 def sortPlayers(key):
         global sorted_list
         global players
+        global sorted_list
+        global players
         var = str(values[key])
         if len(sorted_list) < 1:
                 print('less than 1')
@@ -162,6 +164,4 @@ while not win_closed:
 
               
 
-#STOP. Works generally ok. Might want to re structure to make every iteration run through the ALL checks, and make it less hairy. 
-# have each list input into one function and come out with a defined action from that function, until going through all of them and being
-# sorted correctly. 
+#STOP. Making create window into multiple functions. Need to make sorted_list and players consistent across functions (goes to less than one if every time)
