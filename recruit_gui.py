@@ -39,6 +39,8 @@ def create_col(player_list):
 
         # SortPlayers Function
 def sortPlayers(key):
+        global sorted_list
+        global players
         var = str(values[key])
         if len(sorted_list) < 1:
                 print('less than 1')
@@ -50,24 +52,31 @@ def sortPlayers(key):
                 z = []
                 print('all sort')
                 sorted_list = players
-                for item in values.items():
+                for item in values.items(): # obtains sort criteria after ALL selection for one category
                         if item[1] != var:
                                 z.append(item)
+                
                 x = 0
                 index = len(players)
                 z = z[1:-1]
-                print(z)
+                print(players)
                 for player in player_list:
-                        if len(z) > 1:
+                        if len(z) > 1: # something in here doesnt work with ALL sort
 
                                 if z[0][1] in player and z[1][1] in player:
                                         players.append(player)
                         elif len(z) < 1:
+                                
                                 players = player_list
-                                print(players)
+                                index = 0
+                                break
+                                
                         else:
-                                if z[0][1] in player:
+                                if str(z[0][1]) in player:
+                                        print(player)
+                                        print(z[0][1])
                                         players.append(player)
+                                
                                 
                 players = players[index:]
                 sorted_list = players
@@ -143,7 +152,7 @@ while not win_closed:
                                 win_closed = True
                                 break
                 if event == '-SCHOOLS-' or event == '-POSITIONS-' or event == '-CLASS-' or event == '-STATES-' or event == '-RATINGS-':
-                        sorted_list, players = sortPlayers(event)
+                        sortPlayers(event)
                         window = createWindow(event, window, sorted_list, players)
         
 
@@ -153,4 +162,6 @@ while not win_closed:
 
               
 
-#STOP. Making create window into multiple functions. Need to make sorted_list and players consistent across functions (goes to less than one if every time)
+#STOP. Works generally ok. Might want to re structure to make every iteration run through the ALL checks, and make it less hairy. 
+# have each list input into one function and come out with a defined action from that function, until going through all of them and being
+# sorted correctly. 
