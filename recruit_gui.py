@@ -29,6 +29,12 @@ states = [ 'ALL', 'AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'G
 
 ratings = ['Ascending', 'Descending', 'Class Ascending', 'Class Descending']
 
+def find_variable(variable, obj_list):
+        for obj in obj_list:
+                if variable in obj:
+                        return True
+        return False
+
 def create_col(player_list):
         col = [
                 [sg.Text(f'{player_list[i][0]}', size=(18,1), key='-START_CREATECOL-'), sg.Text(f'{player_list[i][1]}', size=(4,1)), sg.Text(f'{player_list[i][2]}'), sg.Push(), sg.Text(f'{player_list[i][3]}'), sg.Text(f'{player_list[i][4]}')] for i in range(len(player_list))
@@ -40,61 +46,61 @@ def create_col(player_list):
         # SortPlayers Function
 def sortPlayers(key):
         global sorted_list
-        global players
-        global sorted_list
-        global players
         var = str(values[key])
         if len(sorted_list) < 1:
                 print('less than 1')
-                players = player_list 
+                if var == 'Ascending' or var == 'Descending':
+                        sorted_list = player_list
                 for player in player_list:
                         if var in player:
                                 sorted_list.append(player) #(41-47) adds players in player_list to sorted_list if they match the sort criteria (position, class, etc.)             
         elif var == 'ALL':
                 z = []
                 print('all sort')
-                sorted_list = players
-                for item in values.items(): # obtains sort criteria after ALL selection for one category
+                for item in values.items():
                         if item[1] != var:
                                 z.append(item)
-                
                 x = 0
-                index = len(players)
+                index = len(sorted_list)
                 z = z[1:-1]
-                print(players)
+                print(len(z))
+                print(player_list)
                 for player in player_list:
-                        if len(z) > 1: # something in here doesnt work with ALL sort
-
+                        if len(z) > 1:
                                 if z[0][1] in player and z[1][1] in player:
-                                        players.append(player)
-                        elif len(z) < 1:
-                                
-                                players = player_list
-                                index = 0
-                                break
-                                
+                                        sorted_list.append(player)
+                        elif len(z) < 1:        
+                                sorted_list.extend(player_list)
+                                break   
                         else:
-                                if str(z[0][1]) in player:
-                                        print(player)
-                                        print(z[0][1])
-                                        players.append(player)
-                                
-                                
-                players = players[index:]
-                sorted_list = players
+                                if str(z[0][1]) == player[1] or str(z[0][1]) == player[2] or str(z[0][1]) == player[3] or str(z[0][1]) == player[4]:
+                                        sorted_list.append(player)
+                            
+                sorted_list = sorted_list[index:]
+                
+                
 
         else:
                 print('ADDED LIST')
-                players = sorted_list.copy()
-                count = len(sorted_list)
-                for player in sorted_list[0:count]:
-                        if var not in player and var != 'Ascending' and var != 'Descending':
-                                sorted_list.remove(player)
+                if not find_variable(var, sorted_list):
+                        print("cc")
+                        sorted_list = player_list
+                length = len(sorted_list)
+                placeholder = sorted_list.copy()
+                for index, player in enumerate(placeholder):
+                        var = str(var)
+                        print(len(player))
+                        print(player)
+                        if len(player) == 5: 
+                                if var == player[1] or var == player[2] or var == player[3]:
+                                        sorted_list.append(player)
 
-        return sorted_list, players
+                sorted_list = sorted_list[length:]
+
+        return sorted_list
 
 
-def createWindow(key, window, sorted_list, players):
+def createWindow(key, window, sorted_list):
         var = str(values[key])
         if key == '-SCHOOLS-':
                 x = make_school_window(var)
@@ -106,11 +112,11 @@ def createWindow(key, window, sorted_list, players):
                 if var[0:5] == 'Class':
                         sort = -3
                 if 'Ascending' in var:
-                        players.sort(key = lambda players: players[sort])
-                        x = make_sorted_window(var, players)
+                        sorted_list.sort(key = lambda sorted_list: sorted_list[sort])
+                        x = make_sorted_window(var, sorted_list)
                 if 'Descending' in var:
-                        players.sort(reverse=True, key = lambda players: players[sort])
-                        x = make_sorted_window(var, players)
+                        sorted_list.sort(reverse=True, key = lambda sorted_list: sorted_list[sort])
+                        x = make_sorted_window(var, sorted_list)
         
         window.close()
         window = x
@@ -154,8 +160,8 @@ while not win_closed:
                                 win_closed = True
                                 break
                 if event == '-SCHOOLS-' or event == '-POSITIONS-' or event == '-CLASS-' or event == '-STATES-' or event == '-RATINGS-':
-                        sortPlayers(event)
-                        window = createWindow(event, window, sorted_list, players)
+                        sorted_list = sortPlayers(event)
+                        window = createWindow(event, window, sorted_list)
         
 
 
@@ -164,4 +170,4 @@ while not win_closed:
 
               
 
-#STOP. Making create window into multiple functions. Need to make sorted_list and players consistent across functions (goes to less than one if every time)
+#STOP. Fixed various bugs, Ascending and Descending filters need to be fixed
