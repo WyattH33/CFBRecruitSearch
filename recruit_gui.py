@@ -1,15 +1,8 @@
 import PySimpleGUI as sg
 from scraper import create_player_list
-from time import sleep
+from player_sorting import *
 
-school = 'oklahoma'
-
-player_list = create_player_list(school)
-
-sorted_list = []
-players = []
-
-schools = sorted(['ALL', 'georgia-tech', 'louisville', 'miami', 'north-carolina', 'nc-state', 'pittsburgh', 'syracuse', 'virginia', 'virginia', 'wake-forest', 'notre-dame', 'illinois', 'indiana', 'iowa',
+schools = sorted(['georgia-tech', 'louisville', 'miami', 'north-carolina', 'nc-state', 'pittsburgh', 'syracuse', 'virginia', 'virginia', 'wake-forest', 'notre-dame', 'illinois', 'indiana', 'iowa',
             'maryland', 'michigan', 'michigan-state', 'minnesota', 'nebraska', 'northwestern', 'ohio-state', 'penn-state', 'purdue', 'rutgers', 'wisconsin', 
             'baylor', 'iowa-state', 'kansas', 'kansas-state', 'oklahoma-state', 'tcu', 'texas-tech', 'west-virginia', 'texas', 'oklahoma', 'cincinatti', 'byu', 'houston', 'ucf',
             'arizona', 'arizona-state', 'california', 'ucla', 'colorado', 'oregon', 'oregon-state', 'usc', 'stanford', 'utah', 'washingston', 'washington-state',
@@ -29,100 +22,38 @@ states = [ 'ALL', 'AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'G
 
 ratings = ['Ascending', 'Descending', 'Class Ascending', 'Class Descending']
 
-def find_variable(variable, obj_list):
-        for obj in obj_list:
-                if variable in obj:
-                        return True
-        return False
-
 def create_col(player_list):
         col = [
                 [sg.Text(f'{player_list[i][0]}', size=(18,1), key='-START_CREATECOL-'), sg.Text(f'{player_list[i][1]}', size=(4,1)), sg.Text(f'{player_list[i][2]}'), sg.Push(), sg.Text(f'{player_list[i][3]}'), sg.Text(f'{player_list[i][4]}')] for i in range(len(player_list))
         ]
         return col
-        
 
-
-        # SortPlayers Function
-def sortPlayers(key):
-        global sorted_list
-        var = str(values[key])
-        if len(sorted_list) < 1:
-                print('less than 1')
-                if var == 'Ascending' or var == 'Descending':
-                        sorted_list = player_list
-                for player in player_list:
-                        if var in player:
-                                sorted_list.append(player) #(41-47) adds players in player_list to sorted_list if they match the sort criteria (position, class, etc.)             
-        elif var == 'ALL':
-                z = []
-                print('all sort')
-                for item in values.items():
-                        if item[1] != var:
-                                z.append(item)
-                x = 0
-                index = len(sorted_list)
-                z = z[1:-1]
-                print(len(z))
-                print(player_list)
-                for player in player_list:
-                        if len(z) > 1:
-                                if z[0][1] in player and z[1][1] in player:
-                                        sorted_list.append(player)
-                        elif len(z) < 1:        
-                                sorted_list.extend(player_list)
-                                break   
-                        else:
-                                if str(z[0][1]) == player[1] or str(z[0][1]) == player[2] or str(z[0][1]) == player[3] or str(z[0][1]) == player[4]:
-                                        sorted_list.append(player)
-                            
-                sorted_list = sorted_list[index:]
-                
-                
-
-        else:
-                print('ADDED LIST')
-                if not find_variable(var, sorted_list):
-                        print("cc")
-                        sorted_list = player_list
-                length = len(sorted_list)
-                placeholder = sorted_list.copy()
-                for index, player in enumerate(placeholder):
-                        var = str(var)
-                        print(len(player))
-                        print(player)
-                        if len(player) == 5: 
-                                if var == player[1] or var == player[2] or var == player[3]:
-                                        sorted_list.append(player)
-
-                sorted_list = sorted_list[length:]
-
-        return sorted_list
-
-
-def createWindow(key, window, sorted_list):
+def createWindow(key, window, sorted_list, values): # creates pop up gui
         var = str(values[key])
         if key == '-SCHOOLS-':
-                x = make_school_window(var)
+                x, sorted_list = make_school_window(var)
         elif key == '-POSITIONS-' or key == '-CLASS-' or key == '-STATES-':
-                x = make_sorted_window(var, sorted_list)
+                x = make_sorted_window(sorted_list, values)
         elif key == '-RATINGS-':
                 
                 sort = -1
                 if var[0:5] == 'Class':
+                        print("Cllass")
                         sort = -3
                 if 'Ascending' in var:
+                        print(sorted_list)
                         sorted_list.sort(key = lambda sorted_list: sorted_list[sort])
-                        x = make_sorted_window(var, sorted_list)
+                        x = make_sorted_window(sorted_list, values)
                 if 'Descending' in var:
+                        print("DDDDDD")
                         sorted_list.sort(reverse=True, key = lambda sorted_list: sorted_list[sort])
-                        x = make_sorted_window(var, sorted_list)
+                        x = make_sorted_window(sorted_list, values)
         
         window.close()
         window = x
         return window
 
-def make_school_window(school):
+def make_school_window(school): # returns gui layout when selecting a new school 
         global player_list 
         player_list = create_player_list(school)
         col = create_col(player_list)
@@ -135,9 +66,9 @@ def make_school_window(school):
                 [sg.Column(col1, key='-COL1-')],
                   [sg.Column(col, size=(460,600), scrollable=True, vertical_scroll_only=True, visible=True, key=f'-COL{school}-')]
                   ]
-        return sg.Window('Recruit Search', layout, size=(500, 600))
+        return sg.Window('Recruit Search', layout, size=(500, 600)), player_list
 
-def make_sorted_window(pos, sort_list):
+def make_sorted_window(sort_list, values): # returns gui layout after sorting
         col = create_col(sort_list)
 
         col1 = [
@@ -149,25 +80,4 @@ def make_sorted_window(pos, sort_list):
                   [sg.Column(col, size=(460,600), scrollable=True, vertical_scroll_only=True, visible=True, key=f'-COL{school}-')]
                   ]
         return sg.Window('Recruit Search', layout, size=(500, 600))
-
-win_closed = False
-while not win_closed:
-
-        window = make_school_window(school)
-        while True:
-                event, values = window.read()
-                if event == sg.WIN_CLOSED:
-                                win_closed = True
-                                break
-                if event == '-SCHOOLS-' or event == '-POSITIONS-' or event == '-CLASS-' or event == '-STATES-' or event == '-RATINGS-':
-                        sorted_list = sortPlayers(event)
-                        window = createWindow(event, window, sorted_list)
         
-
-
-
-                
-
-              
-
-#STOP. Fixed various bugs, Ascending and Descending filters need to be fixed
